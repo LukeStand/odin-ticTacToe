@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tic-Tac-Toe</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    
+    <div class="main-container">
+        <header>Tic-Tac-Toe</header>
+        <form id="name-form">
+            <div id="input-container">
+                <div class="section">
+                    <label for="name1">Player Name 1 (X's):</label>
+                    <input type="text" placeholder="player1" name="name1" required>
+                </div>
+                <div class="section">
+                    <label for="name2">Player Name 2 (O's):</label>
+                    <input type="text" placeholder="player2" name="name2" required>
+                </div>
+            </div>
+        
+            <button type="submit" id="start-button">Start</button>
+        </form>
+        <p id="current-turn">Current Turn:<span id="current-player"></span> </p>
+        <div class="grid-container">
+        </div>
+    </div>
+    <footer> &copy LukeStanderwick</footer>
+    <script src="main.js"></script>
+</body>
+</html>
