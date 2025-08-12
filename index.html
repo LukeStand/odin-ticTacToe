@@ -24,9 +24,19 @@
         
             <button type="submit" id="start-button">Start</button>
         </form>
-        <p id="current-turn">Current Turn:<span id="current-player"></span> </p>
-        <div class="grid-container">
+        <dialog id="myModal">
+                <div class="winner-info">
+
+                </div>
+                <button id="closeModal-btn" autofocus> close</button>
+        </dialog>
+
+        <div class="game-wrapper">
+            <p id="current-turn"> </p>
+            <div class="grid-container">
+            </div>
         </div>
+        
     </div>
     <footer> &copy LukeStanderwick</footer>
     <script src="main.js"></script>
