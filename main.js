@@ -59,10 +59,12 @@ function displayBoard()
 {
     document.querySelector("form").remove();
     const gameWrapper = document.querySelector(".game-wrapper");
-    const grid = document.querySelector(".grid-container");
+    const grid = document.createElement("div");
+    grid.classList.add("grid-container")
     const turnDisp = document.createElement("p");
     turnDisp.setAttribute("id", "current-turn");
-    gameWrapper.insertBefore(turnDisp, gameWrapper.firstChild); 
+    gameWrapper.appendChild(turnDisp);
+    gameWrapper.appendChild(grid);
     
     for(let i =0; i<3;i++)
     {
@@ -162,12 +164,6 @@ function endGame(player,isWinner)
 {
     const dialog = document.querySelector("#myModal");
     const dialogText =  document.querySelector("#winner-info");
-    const cells = document.querySelectorAll(".grid-cell");
-    const turnDisp = document.querySelector("#current-turn");
-    cells.forEach(cell => {
-        cell.remove();
-    });
-    turnDisp.remove();
     if(isWinner)
     {
         dialogText.textContent = `Winner is ${player.name}!!`
@@ -237,6 +233,10 @@ const closeModalBtn = document.querySelector("#closeModal-btn")
 closeModalBtn.addEventListener("click",function()
 {
     const dialog = document.querySelector("#myModal");
+    const grid = document.querySelector(".grid-container");
+    const turnDisp = document.querySelector("#current-turn");
+    grid.remove();
+    turnDisp.remove();
     dialog.close();
     displayForm();
 })
