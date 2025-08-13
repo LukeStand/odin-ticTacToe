@@ -1,8 +1,69 @@
 //game obj stores all the players and board stuff
 let gameObj;
+function displayForm()
+{
+    const mainContainer = document.querySelector(".main-container");
+    const form = document.createElement("form");
+    const inputsContainer = document.createElement("div")
+    inputsContainer.setAttribute("id","input-container");
+//create the containers for input and lable
+    const section1 = document.createElement("div");
+    const section2 = document.createElement("div");
+    section1.classList.add("section");
+    section2.classList.add("section");
+
+//create input elements
+    const name1 = document.createElement("input");
+    const name2 = document.createElement("input");
+    name1.setAttribute("type", "text");
+    name2.setAttribute("type", "text");
+    name1.setAttribute("placeholder", "player1");
+    name2.setAttribute("placeholder", "player2");
+    name1.setAttribute("name", "name1");
+    name2.setAttribute("name", "name2");
+    name1.setAttribute("required", "");
+    name2.setAttribute("required", "");
+
+    //create the label element for each input
+    const label1 =document.createElement("label");
+    const label2 = document.createElement("label");
+    label1.setAttribute("for","name1");
+    label2.setAttribute("for","name2");
+    label1.textContent = "Player Name 1 (X's):";
+    label2.textContent = "Player Name 2 (O's):";
+
+//append section children
+    section1.appendChild(label1);
+    section1.appendChild(name1);
+    section2.appendChild(label2);
+    section2.appendChild(name2);
+//append inputsections to conatiner
+    inputsContainer.appendChild(section1);
+    inputsContainer.appendChild(section2);
+//append to form
+    form.appendChild(inputsContainer);
+    form.setAttribute("id","name-form")
+//create submit button and add to form
+    const submitButton = document.createElement("button");
+    submitButton.setAttribute("type","submit");
+    submitButton.setAttribute("id","start-button");
+    submitButton.textContent="Start";
+
+    form.appendChild(submitButton);
+//append the form to the main container
+   mainContainer.insertBefore(form, mainContainer.children[1]);
+   formListeners();
+   
+}
 function displayBoard()
 {
     document.querySelector("form").remove();
+    const gameWrapper = document.querySelector(".game-wrapper");
+    const grid = document.querySelector(".grid-container");
+    const turnDisp = document.createElement("p");
+    turnDisp.setAttribute("id", "current-turn");
+    gameWrapper.insertBefore(turnDisp, gameWrapper.firstChild); 
+    
     for(let i =0; i<3;i++)
     {
         for(let k =0; k<3;k++)
@@ -71,7 +132,7 @@ function createBoard()
         return gameBoard[index];
     }
 
-    return{playSpace, isEmpty,incrementPlayCount,getPlayCount,getSpace,winningLines};
+    return{playSpace, isEmpty,incrementPlayCount,getPlayCount,getSpace,winningLines,};
 }
 function checkForWin()
 {
@@ -86,19 +147,37 @@ function checkForWin()
         if(gameObj.board.getSpace(a) == player.marker && gameObj.board.getSpace(b) == player.marker && gameObj.board.getSpace(c) == player.marker)
         {
             console.log("winner!")
-            endGame(player);
+            endGame(player,1);
+            return true;
         }
+        else if(gameObj.board.getPlayCount()==9)
+        {
+            console.log("in tie check" + gameObj.board.getPlayCount());
+            endGame(player,0)
+        }
+
     }
 }
-function endGame(player)
+function endGame(player,isWinner)
 {
     const dialog = document.querySelector("#myModal");
+    const dialogText =  document.querySelector("#winner-info");
     const cells = document.querySelectorAll(".grid-cell");
+    const turnDisp = document.querySelector("#current-turn");
     cells.forEach(cell => {
         cell.remove();
     });
-    dialog.textContent = `Winner is ${player.name}!!`
+    turnDisp.remove();
+    if(isWinner)
+    {
+        dialogText.textContent = `Winner is ${player.name}!!`
+    }
+    else
+    {
+        dialogText.textContent = `Cats Game(Tie)!!`
+    }
     dialog.showModal();
+    
 }
 function initiateAllObjects(name1,name2)
 {
@@ -124,30 +203,53 @@ function startGame(name1,name2)
 {
     gameObj = initiateAllObjects(name1,name2);
     updateTurnDisplay(gameObj.players[gameObj.getCurrentPlayerIndex()]);
+    addGridListeners();
 }
-const grid =  document.querySelector(".grid-container");
-grid.addEventListener("click",function(e)
+function addGridListeners()
 {
-    
-    const currentCell = e.target;
-    const x = parseInt(currentCell.dataset.x);
-    const y =parseInt(currentCell.dataset.y);
-    const index = (x*3 +y);
-    if(gameObj.board.isEmpty(index))
+    const grid =  document.querySelector(".grid-container");
+    grid.addEventListener("click",function(e)
     {
-        gameObj.board.playSpace(index,gameObj.players[gameObj.getCurrentPlayerIndex()]);
-        displayCell(currentCell);
-        checkForWin();
-        gameObj.nextTurn();
-        updateTurnDisplay(gameObj.players[gameObj.getCurrentPlayerIndex()]);
-    }
+        
+        const currentCell = e.target;
+        const x = parseInt(currentCell.dataset.x);
+        const y =parseInt(currentCell.dataset.y);
+        const index = (x*3 +y);
+        if(gameObj.board.isEmpty(index))
+        {
+            gameObj.board.incrementPlayCount();
+            gameObj.board.playSpace(index,gameObj.players[gameObj.getCurrentPlayerIndex()]);
+            displayCell(currentCell);
+            if(checkForWin())
+            {
+                return;
+            }
+            else
+            {
+                gameObj.nextTurn();
+                updateTurnDisplay(gameObj.players[gameObj.getCurrentPlayerIndex()]);
+                
+            }
+        }
+    })
+}
+const closeModalBtn = document.querySelector("#closeModal-btn")
+closeModalBtn.addEventListener("click",function()
+{
+    const dialog = document.querySelector("#myModal");
+    dialog.close();
+    displayForm();
 })
+function formListeners(){
+    const form = document.querySelector("#name-form");
+    form.addEventListener("submit",function(e)
+    {
+        e.preventDefault();
+        const formData = new FormData(e.target);
+        const name1 = formData.get("name1");
+        const name2 = formData.get("name2");
+        startGame(name1,name2);
+    })
+}
+formListeners();
 
-const form = document.querySelector("#name-form");
-form.addEventListener("submit",function(e){
-    e.preventDefault();
-    const formData = new FormData(e.target);
-    const name1 = formData.get("name1");
-    const name2 = formData.get("name2");
-    startGame(name1,name2);
-})
