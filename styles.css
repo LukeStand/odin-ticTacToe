@@ -94,8 +94,8 @@ form {
     margin:1rem;
 }
 #myModal{
-    width: 30%; 
-    height:50%; 
+    width: 30vw; 
+    height:50vh; 
     background-image: url("https://media.tenor.com/r_ZRhGSyAhEAAAAM/funny-animals-joke.gif");
     background-size: cover;     
     background-position: center;  
